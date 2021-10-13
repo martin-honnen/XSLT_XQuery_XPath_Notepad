@@ -107,6 +107,7 @@
                     <Separator/>
                     <MenuItem Command="commands:MyApplicationCommands.SaveXsltCode"/>
                     <MenuItem Command="commands:MyApplicationCommands.SaveXQueryCode"/>
+                    <MenuItem Command="commands:MyApplicationCommands.SaveXPathCode"/>
                 </ContextMenu>
             </avalonEdit:TextEditor.ContextMenu>
         </avalonEdit:TextEditor>
