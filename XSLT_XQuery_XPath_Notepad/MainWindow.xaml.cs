@@ -214,7 +214,10 @@ namespace XSLT_XQuery_XPath_Notepad
         {
             LoadFileIntoEditor(codeEditor, "XQuery files|*.xq;*.xquery|All files|*.*");
         }
-
+        private void LoadXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            LoadFileIntoEditor(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*");
+        }
         private void SaveXsltCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SaveEditorToFile(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*");
@@ -224,7 +227,10 @@ namespace XSLT_XQuery_XPath_Notepad
         {
             SaveEditorToFile(codeEditor, "XQuery files|*.xq;*.xquery|All files|*.*");
         }
-
+        private void SaveXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SaveEditorToFile(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*");
+        }
         private void SaveResultDocument_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SaveEditorToFile(resultEditor, "HTML files|*.html;*.html|XML files|*.xml|Text files|*.txt;*.text|JSON files|*.json|All files|*.*");
