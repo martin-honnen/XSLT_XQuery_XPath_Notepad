@@ -12,8 +12,10 @@
         <CommandBinding Command="commands:MyApplicationCommands.LoadJsonInput" Executed="LoadJsonInput_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXsltCode" Executed="LoadXsltCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXQueryCode" Executed="LoadXQueryCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.LoadXPathCode" Executed="LoadXPathCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveXsltCode" Executed="SaveXsltCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveXQueryCode" Executed="SaveXQueryCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.SaveXPathCode" Executed="SaveXPathCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveInputDocument" Executed="SaveInputDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveResultDocument" Executed="SaveResultDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
     </Window.CommandBindings>
@@ -37,8 +39,10 @@
                 <MenuItem Header="Load _JSON input" Command="commands:MyApplicationCommands.LoadJsonInput"/>
                 <MenuItem Header="Load X_SLT file" Command="commands:MyApplicationCommands.LoadXsltCode"/>
                 <MenuItem Header="Load X_Query file" Command="commands:MyApplicationCommands.LoadXQueryCode"/>
+                <MenuItem Header="Load X_Path file" Command="commands:MyApplicationCommands.LoadXPathCode"/>
                 <MenuItem Header="Save XSLT code" Command="commands:MyApplicationCommands.SaveXsltCode"/>
                 <MenuItem Header="Save XQuery code" Command="commands:MyApplicationCommands.SaveXQueryCode"/>
+                <MenuItem Header="Save XPath code" Command="commands:MyApplicationCommands.SaveXPathCode"/>
                 <MenuItem Header="Save input document" Command="commands:MyApplicationCommands.SaveInputDocument"/>
                 <MenuItem Header="Save result document" Command="commands:MyApplicationCommands.SaveResultDocument"/>
             </MenuItem>
