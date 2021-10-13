@@ -1,0 +1,17 @@
+﻿<Window x:Class="XSLT_XQuery_XPath_Notepad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:XSLT_XQuery_XPath_Notepad"
+        xmlns:commands="clr-namespace:XSLT_XQuery_XPath_Notepad.Commands"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="800">
+    <Window.CommandBindings>
+        <CommandBinding Command="commands:MyApplicationCommands.LoadXmlInput" Executed="LoadXmlInput_Executed" CanExecute="LoadXmlInput_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommand.LoadJsonInput" Executed="LoadJsonInput_Executed" CanExecute="LoadJsonInput_CanExecute"/>
+    </Window.CommandBindings>
+    <Grid>
+        
+    </Grid>
+</Window>
