@@ -16,5 +16,13 @@ namespace XSLT_XQuery_XPath_Notepad.Commands
         public static RoutedUICommand LoadXsltCode = new RoutedUICommand("Load XSLT file", "LoadXsltCode", typeof(MyApplicationCommands));
 
         public static RoutedUICommand LoadXQueryCode = new RoutedUICommand("Load XQuery file", "LoadXQueryCode", typeof(MyApplicationCommands));
+
+        public static RoutedUICommand SaveInputDocument = new RoutedUICommand("Save input document", "SaveInputDocument", typeof(MyApplicationCommands));
+
+        public static RoutedUICommand SaveXsltCode = new RoutedUICommand("Save XSLT code", "SaveXsltCode", typeof(MyApplicationCommands));
+
+        public static RoutedUICommand SaveXQueryCode = new RoutedUICommand("Save XQuery code", "SaveXQueryCode", typeof(MyApplicationCommands));
+
+        public static RoutedUICommand SaveResultDocument = new RoutedUICommand("Save result document", "SaveResultDocument", typeof(MyApplicationCommands));
     }
 }
