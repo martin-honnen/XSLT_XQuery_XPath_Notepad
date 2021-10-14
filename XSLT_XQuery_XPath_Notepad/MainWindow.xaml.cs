@@ -69,7 +69,7 @@ namespace XSLT_XQuery_XPath_Notepad
         }
         private void xpathEvaluationBtn_Click(object sender, RoutedEventArgs e)
         {
-            errorBox.Text = "";
+            statusText.Text = "";
             resultEditor.Clear();
 
             try
@@ -94,13 +94,13 @@ namespace XSLT_XQuery_XPath_Notepad
             }
             catch (Exception ex)
             {
-                errorBox.Text = ex.Message;
+                statusText.Text = ex.Message;
             }
         }
 
         private void xqueryEvaluationBtn_Click(object sender, RoutedEventArgs e)
         {
-            errorBox.Text = "";
+            statusText.Text = "";
             resultEditor.Clear();
 
             List<XmlProcessingError> errorList = new List<XmlProcessingError>();
@@ -112,33 +112,49 @@ namespace XSLT_XQuery_XPath_Notepad
                 {
                     serializer.SetOutputWriter(sw);
 
+                    statusText.Text = "Compiling XQuery...";
+
                     var xqueryEvaluator = xqueryCompiler.Compile(codeEditor.Text).Load();
 
-                    docBuilder.BaseUri = new Uri("urn:from-string");
+                    if ((bool)xmlInputType.IsChecked)
+                    {
+                        statusText.Text = "Parsing XML input document...";
 
-                    xqueryEvaluator.ContextItem = (bool)xmlInputType.IsChecked ?
-                        docBuilder.Build(new StringReader(inputEditor.Text))
-                        : (bool)jsonInputType.IsChecked ?
-                        ParseJson(inputEditor.Text) : null;
+                        docBuilder.BaseUri = new Uri("urn:from-string");
+                        xqueryEvaluator.ContextItem = docBuilder.Build(new StringReader(inputEditor.Text));
+                    }
+                    else if ((bool)jsonInputType.IsChecked)
+                    {
+                        statusText.Text = "Parsing JSON input";
+
+                        xqueryEvaluator.ContextItem = ParseJson(inputEditor.Text);
+                    }
+
+                    statusText.Text = "Running XQuery...";
 
                     xqueryEvaluator.Run(serializer);
 
+                    statusText.Text = "";
+
                     resultEditor.Text = sw.ToString();
+                    resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
                 }
             }
             catch (Exception ex)
             {
-                errorBox.Text = ex.Message;
+                statusText.Text = ex.Message;
                 if (errorList.Any())
                 {
-                    errorBox.Text += ":" + string.Join(".", errorList.Select(error => string.Format("{0}:{1}:{2}", error.Message, error.LineNumber, error.ColumnNumber)));
+                    statusText.Text += string.Format(": {0}: {1}:{2}", errorList.First().Message, errorList.First().LineNumber, errorList.First().ColumnNumber);
+                    resultEditor.Text = string.Join("\n", errorList.Select(error => string.Format("{0}: {1}:{2}", error.Message, error.LineNumber, error.ColumnNumber)));
+                    resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
                 }
             }
         }
 
         private void xsltTransformationButton_Click(object sender, RoutedEventArgs e)
         {
-            errorBox.Text = "";
+            statusText.Text = "";
             resultEditor.Clear();
 
             List<XmlProcessingError> errorList = new List<XmlProcessingError>();
@@ -146,14 +162,26 @@ namespace XSLT_XQuery_XPath_Notepad
 
             try
             {
+                statusText.Text = "Compiling XSLT code...";
+
                 Xslt30Transformer transformer = xsltCompiler.Compile(new StringReader(codeEditor.Text)).Load30();
 
-                docBuilder.BaseUri = new Uri("urn:from-string");
+                XdmItem inputItem = null;
 
-                XdmItem inputItem = (bool)xmlInputType.IsChecked ?
-                        docBuilder.Build(new StringReader(inputEditor.Text))
-                        : (bool)jsonInputType.IsChecked ?
-                        ParseJson(inputEditor.Text) : null;
+                if ((bool)xmlInputType.IsChecked)
+                {
+                    statusText.Text = "Parsing XML input document...";
+
+                    docBuilder.BaseUri = new Uri("urn:from-string");
+                    inputItem = docBuilder.Build(new StringReader(inputEditor.Text));
+                }
+                else if ((bool)jsonInputType.IsChecked)
+                {
+                    statusText.Text = "Parsing JSON input...";
+
+                    inputItem = ParseJson(inputEditor.Text);
+                }
+
 
                 if (inputItem == null)
                 {
@@ -161,9 +189,14 @@ namespace XSLT_XQuery_XPath_Notepad
                     {
                         serializer.SetOutputWriter(sw);
 
+                        statusText.Text = "Running xsl:initialTemplate...";
+
                         transformer.CallTemplate(null, serializer);
 
+                        statusText.Text = "";
+
                         resultEditor.Text = sw.ToString();
+                        resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
                     }
                 }
                 else
@@ -174,18 +207,26 @@ namespace XSLT_XQuery_XPath_Notepad
 
                         transformer.GlobalContextItem = inputItem;
 
+                        statusText.Text = "Applying templates processing...";
+
                         transformer.ApplyTemplates(inputItem, serializer);
 
+                        statusText.Text = "";
+
                         resultEditor.Text = sw.ToString();
+
+                        resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
                     }
                 }
             }
             catch (Exception ex)
             {
-                errorBox.Text = ex.Message;
+                statusText.Text = ex.Message;
                 if (errorList.Any())
                 {
-                    errorBox.Text += ":" + string.Join(".", errorList.Select(error => string.Format("{0}:{1}:{2}", error.Message, error.LineNumber, error.ColumnNumber)));
+                    statusText.Text += string.Format(": {0}: {1}:{2}", errorList.First().Message, errorList.First().LineNumber, errorList.First().ColumnNumber);
+                    resultEditor.Text = string.Join("\n", errorList.Select(error => string.Format("{0}: {1}:{2}", error.Message, error.LineNumber, error.ColumnNumber)));
+                    resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
                 }
             }
         }
