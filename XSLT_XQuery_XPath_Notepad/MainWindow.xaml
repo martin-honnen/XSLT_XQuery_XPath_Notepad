@@ -112,23 +112,29 @@
             </avalonEdit:TextEditor.ContextMenu>
         </avalonEdit:TextEditor>
         <GridSplitter Grid.Row="3" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" />
-        <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        <StackPanel Orientation="Vertical" Grid.Row="4" Grid.ColumnSpan="3">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label Target="{Binding ElementName=resultDocumentList}">Result Documents</Label>
+                <ComboBox x:Name="resultDocumentList"></ComboBox>
+            </StackPanel>
+            <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
             Name="resultEditor"
             Grid.Row="4" Grid.ColumnSpan="3"
             FontFamily="Consolas"
             SyntaxHighlighting="XML"
             FontSize="10pt" ShowLineNumbers="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <avalonEdit:TextEditor.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Command="Undo" />
-                    <MenuItem Command="Redo" />
-                    <Separator/>
-                    <MenuItem Command="Cut" />
-                    <MenuItem Command="Copy" />
-                    <MenuItem Command="Paste" />
-                </ContextMenu>
-            </avalonEdit:TextEditor.ContextMenu>
-        </avalonEdit:TextEditor>
+                <avalonEdit:TextEditor.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Undo" />
+                        <MenuItem Command="Redo" />
+                        <Separator/>
+                        <MenuItem Command="Cut" />
+                        <MenuItem Command="Copy" />
+                        <MenuItem Command="Paste" />
+                    </ContextMenu>
+                </avalonEdit:TextEditor.ContextMenu>
+            </avalonEdit:TextEditor>
+        </StackPanel>
         <StatusBar Grid.Row="5" Grid.ColumnSpan="3">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
