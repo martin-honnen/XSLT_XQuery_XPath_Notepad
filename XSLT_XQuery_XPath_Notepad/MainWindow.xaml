@@ -19,7 +19,7 @@
         <CommandBinding Command="commands:MyApplicationCommands.SaveInputDocument" Executed="SaveInputDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveResultDocument" Executed="SaveResultDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
     </Window.CommandBindings>
-    <Grid>
+    <Grid x:Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="25"/>
@@ -113,7 +113,7 @@
         </avalonEdit:TextEditor>
         <GridSplitter Grid.Row="3" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" />
         <StackPanel Orientation="Vertical" Grid.Row="4" Grid.ColumnSpan="3">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel x:Name="resultPanel"  Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label Target="{Binding ElementName=resultDocumentList}">Result Documents</Label>
                 <ComboBox x:Name="resultDocumentList"></ComboBox>
             </StackPanel>

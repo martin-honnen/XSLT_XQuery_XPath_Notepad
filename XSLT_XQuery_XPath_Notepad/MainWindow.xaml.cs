@@ -72,6 +72,7 @@ namespace XSLT_XQuery_XPath_Notepad
         private void xpathEvaluationBtn_Click(object sender, RoutedEventArgs e)
         {
             statusText.Text = "";
+            HideResultDocumentList();
             ClearResultDocumentList();
             resultEditor.Clear();
 
@@ -105,6 +106,7 @@ namespace XSLT_XQuery_XPath_Notepad
         {
             statusText.Text = "";
             ClearResultDocumentList();
+            HideResultDocumentList();
             resultEditor.Clear();
 
             List<XmlProcessingError> errorList = new List<XmlProcessingError>();
@@ -160,6 +162,7 @@ namespace XSLT_XQuery_XPath_Notepad
         {
             statusText.Text = "";
             ClearResultDocumentList();
+            ShowResultDocumentList();
             resultEditor.Clear();
 
             List<XmlProcessingError> errorList = new List<XmlProcessingError>();
@@ -253,6 +256,24 @@ namespace XSLT_XQuery_XPath_Notepad
                 resultDocumentList.SelectionChanged -= selectionChangedEventHandler;
             }
             resultDocumentList.ItemsSource = null;
+        }
+
+        private void ShowResultDocumentList()
+        {
+            resultPanel.Visibility = Visibility.Visible;
+        }
+
+        private void HideResultDocumentList()
+        {
+            resultPanel.Visibility = Visibility.Collapsed;
+        }
+        private void ShowGridRow(int rowIndex)
+        {
+            mainGrid.RowDefinitions[rowIndex].Height = new GridLength(1, GridUnitType.Star);
+        }
+        private void HideGridRow(int rowIndex)
+        {
+            mainGrid.RowDefinitions[rowIndex].Height = new GridLength(0);
         }
         private void CommonCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
