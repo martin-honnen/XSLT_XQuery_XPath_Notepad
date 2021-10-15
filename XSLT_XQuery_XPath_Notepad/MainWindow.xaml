@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:XSLT_XQuery_XPath_Notepad"
         xmlns:commands="clr-namespace:XSLT_XQuery_XPath_Notepad.Commands"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800">
+        Title="XSLT 3 XPath 3.1 XQuery 3.1 Notepad" Height="800" Width="1024">
     <Window.CommandBindings>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXmlInput" Executed="LoadXmlInput_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.LoadJsonInput" Executed="LoadJsonInput_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
