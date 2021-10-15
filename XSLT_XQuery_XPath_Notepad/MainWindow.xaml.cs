@@ -39,6 +39,8 @@ namespace XSLT_XQuery_XPath_Notepad
         private XPathSelector jsonBuilder;
 
         private Serializer serializer;
+
+        private SelectionChangedEventHandler selectionChangedEventHandler;
         public MainWindow()
         {
             InitializeComponent();
@@ -70,6 +72,7 @@ namespace XSLT_XQuery_XPath_Notepad
         private void xpathEvaluationBtn_Click(object sender, RoutedEventArgs e)
         {
             statusText.Text = "";
+            ClearResultDocumentList();
             resultEditor.Clear();
 
             try
@@ -101,6 +104,7 @@ namespace XSLT_XQuery_XPath_Notepad
         private void xqueryEvaluationBtn_Click(object sender, RoutedEventArgs e)
         {
             statusText.Text = "";
+            ClearResultDocumentList();
             resultEditor.Clear();
 
             List<XmlProcessingError> errorList = new List<XmlProcessingError>();
@@ -155,6 +159,7 @@ namespace XSLT_XQuery_XPath_Notepad
         private void xsltTransformationButton_Click(object sender, RoutedEventArgs e)
         {
             statusText.Text = "";
+            ClearResultDocumentList();
             resultEditor.Clear();
 
             List<XmlProcessingError> errorList = new List<XmlProcessingError>();
@@ -165,6 +170,14 @@ namespace XSLT_XQuery_XPath_Notepad
                 statusText.Text = "Compiling XSLT code...";
 
                 Xslt30Transformer transformer = xsltCompiler.Compile(new StringReader(codeEditor.Text)).Load30();
+
+                transformer.BaseOutputURI = "urn:to-string";
+
+                var mainSerializer = new MySerializer(processor);
+                Dictionary<string, MySerializer> resultDocuments = new Dictionary<string, MySerializer>();
+                resultDocuments["*** principal result ***"] = mainSerializer;
+                
+                transformer.ResultDocumentHandler = new MyResultDocumentsHandler(processor, resultDocuments);
 
                 XdmItem inputItem = null;
 
@@ -184,44 +197,32 @@ namespace XSLT_XQuery_XPath_Notepad
 
 
                 if (inputItem == null)
-                {
-                    using (StringWriter sw = new StringWriter())
-                    {
-                        serializer.SetOutputWriter(sw);
+                { 
+                    statusText.Text = "Running xsl:initialTemplate...";
 
-                        statusText.Text = "Running xsl:initialTemplate...";
+                    transformer.CallTemplate(null, mainSerializer.serializer);
 
-                        transformer.CallTemplate(null, serializer);
+                    statusText.Text = "";
 
-                        statusText.Text = "";
-
-                        resultEditor.Text = sw.ToString();
-                        resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
-                    }
+                    DisplayResultDocuments((transformer.ResultDocumentHandler as MyResultDocumentsHandler).GetSerializedResultDocuments());                     
                 }
                 else
                 {
-                    using (StringWriter sw = new StringWriter())
-                    {
-                        serializer.SetOutputWriter(sw);
+                    transformer.GlobalContextItem = inputItem;
 
-                        transformer.GlobalContextItem = inputItem;
+                    statusText.Text = "Applying templates processing...";
 
-                        statusText.Text = "Applying templates processing...";
+                    transformer.ApplyTemplates(inputItem, mainSerializer.serializer);
 
-                        transformer.ApplyTemplates(inputItem, serializer);
+                    statusText.Text = "";
 
-                        statusText.Text = "";
-
-                        resultEditor.Text = sw.ToString();
-
-                        resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
-                    }
+                    DisplayResultDocuments((transformer.ResultDocumentHandler as MyResultDocumentsHandler).GetSerializedResultDocuments());
                 }
             }
             catch (Exception ex)
             {
                 statusText.Text = ex.Message;
+                //throw ex;
                 if (errorList.Any())
                 {
                     statusText.Text += string.Format(": {0}: {1}:{2}", errorList.First().Message, errorList.First().LineNumber, errorList.First().ColumnNumber);
@@ -231,6 +232,28 @@ namespace XSLT_XQuery_XPath_Notepad
             }
         }
 
+        private void DisplayResultDocuments(Dictionary<string, string> serializedDocuments)
+        {
+            resultDocumentList.ItemsSource = serializedDocuments.Keys;
+            resultDocumentList.SelectionChanged += selectionChangedEventHandler = (s, e) => DisplayResultDocuments(serializedDocuments[((ComboBox)s).SelectedItem as string]);
+            resultDocumentList.SelectedIndex = 0;
+        }
+
+        private void DisplayResultDocuments(string result)
+        {
+            resultEditor.Text = result;
+
+            resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
+        }
+
+        private void ClearResultDocumentList()
+        {
+            if (selectionChangedEventHandler != null)
+            {
+                resultDocumentList.SelectionChanged -= selectionChangedEventHandler;
+            }
+            resultDocumentList.ItemsSource = null;
+        }
         private void CommonCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
@@ -330,6 +353,7 @@ namespace XSLT_XQuery_XPath_Notepad
         {
             inputEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Json");
         }
+
     }
 
 }
