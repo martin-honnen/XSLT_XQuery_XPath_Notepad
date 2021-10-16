@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,6 +41,8 @@ namespace XSLT_XQuery_XPath_Notepad
 
         private Serializer serializer;
 
+        private XPathSelector xpathResultSerializer;
+
         private SelectionChangedEventHandler selectionChangedEventHandler;
         public MainWindow()
         {
@@ -61,6 +64,12 @@ namespace XSLT_XQuery_XPath_Notepad
             jsonDocCompiler.DeclareVariable(new QName("input"));
 
             jsonBuilder = jsonDocCompiler.Compile("parse-json($input)").Load();
+
+            XPathCompiler xpathResultCompiler = processor.NewXPathCompiler();
+            xpathResultCompiler.DeclareVariable(new QName("value"));
+            xpathResultCompiler.DeclareVariable(new QName("serialization-parameters"));
+
+            xpathResultSerializer = xpathResultCompiler.Compile("serialize($value, $serialization-parameters)").Load();
             
         }
 
@@ -77,24 +86,37 @@ namespace XSLT_XQuery_XPath_Notepad
             resultEditor.Clear();
 
             try
-            {
-                using (StringWriter sw = new StringWriter())
+            {            
+                var xpathCode = codeEditor.Text;
+
+                var serializationParamsCode = Regex.Replace(xpathCode, @"(^\(:(?!:\))(.+?):\))?(.*)", "$2", RegexOptions.Singleline);
+
+                if (serializationParamsCode == "")
                 {
-                    serializer.SetOutputWriter(sw);
-
-                    docBuilder.BaseUri = new Uri("urn:from-string");
-
-                    var result = xpathCompiler.Evaluate(
-                        codeEditor.Text,
-                        (bool)xmlInputType.IsChecked ?
-                        docBuilder.Build(new StringReader(inputEditor.Text))
-                        : (bool)jsonInputType.IsChecked ?
-                        ParseJson(inputEditor.Text) : null);
-
-                    serializer.SerializeXdmValue(result);
-
-                    resultEditor.Text = sw.ToString();
+                    serializationParamsCode = "map{}";
                 }
+
+                var serializationParams = xpathCompiler.EvaluateSingle(serializationParamsCode, null);
+
+                //serializer.SetOutputWriter(sw);
+
+                docBuilder.BaseUri = new Uri("urn:from-string");
+
+                var result = xpathCompiler.Evaluate(
+                    codeEditor.Text,
+                    (bool)xmlInputType.IsChecked ?
+                    docBuilder.Build(new StringReader(inputEditor.Text))
+                    : (bool)jsonInputType.IsChecked ?
+                    ParseJson(inputEditor.Text) : null);
+
+                //serializer.SerializeXdmValue(result);
+
+                xpathResultSerializer.SetVariable(new QName("value"), result);
+                xpathResultSerializer.SetVariable(new QName("serialization-parameters"), serializationParams);
+
+                var resultString = xpathResultSerializer.EvaluateSingle().GetStringValue();
+
+                resultEditor.Text = resultString;
             }
             catch (Exception ex)
             {
