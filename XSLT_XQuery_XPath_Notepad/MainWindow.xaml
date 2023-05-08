@@ -71,10 +71,15 @@
         </ToolBarTray>
         <ToolBarTray Grid.Row="1" Grid.Column="2">
             <ToolBar>
+                <Label>Code type:</Label>
+                <RadioButton x:Name="codeTypeXslt" GroupName="codeType" Content="XSLT" IsChecked="True" Click="codeTypeXslt_Click"/>
+                <RadioButton x:Name="codeTypeXQuery" GroupName="codeType" Content="XQuery" IsChecked="False" Click="codeTypeXQuery_Click"/>
+                <RadioButton x:Name="codeTypeXPath" GroupName="codeType" Content="XPath" IsChecked="False" Click="codeTypeXPath_Click"/>
+                <Button x:Name="evaluateCode" Content="Evaluate code" Click="evaluateCode_Click"/>
+                <CheckBox x:Name="autoEvaluateCbx" Content="Automatic evaluation" IsChecked="False" Checked="autoEvaluateCbx_Checked"/>
                 <Button x:Name="xsltTransformationButton" Click="xsltTransformationButton_Click">XSLT transformation</Button>
                 <Button x:Name="xqueryEvaluationBtn" Click="xqueryEvaluationBtn_Click">XQuery evaluation</Button>
                 <Button x:Name="xpathEvaluationBtn" Click="xpathEvaluationBtn_Click">XPath evaluation</Button>
-                <CheckBox x:Name="autoEvaluateCbx" Content="Automatic evaluation" IsChecked="False" Checked="autoEvaluateCbx_Checked"/>
             </ToolBar>
         </ToolBarTray>
         <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"

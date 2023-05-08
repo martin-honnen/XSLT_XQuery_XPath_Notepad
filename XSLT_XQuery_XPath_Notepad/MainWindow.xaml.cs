@@ -32,6 +32,10 @@ namespace XSLT_XQuery_XPath_Notepad
 
         private string baseXsltCodeURI = defaultBaseInputURI;
 
+        private string baseXQueryCodeURI = defaultBaseInputURI;
+
+        private string baseXPathCodeURI = defaultBaseInputURI;
+
         private static Processor processor = new Processor();
 
         private XPathCompiler xpathCompiler;
@@ -90,7 +94,7 @@ namespace XSLT_XQuery_XPath_Notepad
             {
                 typingTimer.IsEnabled = false;
                 typingTimer.Stop();
-                runXsltTransformation();
+                evaluateCurrentCodeType();
             }
         }
 
@@ -101,104 +105,12 @@ namespace XSLT_XQuery_XPath_Notepad
         }
         private void xpathEvaluationBtn_Click(object sender, RoutedEventArgs e)
         {
-            statusText.Text = "";
-            HideResultDocumentList();
-            ClearResultDocumentList();
-            resultEditor.Clear();
-
-            try
-            {            
-                var xpathCode = codeEditor.Text;
-
-                var serializationParamsCode = Regex.Replace(xpathCode, @"(^\(:(?!:\))(.+?):\))?(.*)", "$2", RegexOptions.Singleline);
-
-                if (serializationParamsCode == "")
-                {
-                    serializationParamsCode = "map{}";
-                }
-
-                var serializationParams = xpathCompiler.EvaluateSingle(serializationParamsCode, null);
-
-                //serializer.SetOutputWriter(sw);
-
-                docBuilder.BaseUri = new Uri("urn:from-string");
-
-                var result = xpathCompiler.Evaluate(
-                    codeEditor.Text,
-                    (bool)xmlInputType.IsChecked ?
-                    docBuilder.Build(new StringReader(inputEditor.Text))
-                    : (bool)jsonInputType.IsChecked ?
-                    ParseJson(inputEditor.Text) : null);
-
-                //serializer.SerializeXdmValue(result);
-
-                xpathResultSerializer.SetVariable(new QName("value"), result);
-                xpathResultSerializer.SetVariable(new QName("serialization-parameters"), serializationParams);
-
-                var resultString = xpathResultSerializer.EvaluateSingle().GetStringValue();
-
-                resultEditor.Text = resultString;
-            }
-            catch (Exception ex)
-            {
-                statusText.Text = ex.Message;
-            }
+            runXPathEvaluation();
         }
 
         private void xqueryEvaluationBtn_Click(object sender, RoutedEventArgs e)
         {
-            statusText.Text = "";
-            ClearResultDocumentList();
-            HideResultDocumentList();
-            resultEditor.Clear();
-
-            List<XmlProcessingError> errorList = new List<XmlProcessingError>();
-            xqueryCompiler.SetErrorList(errorList);
-
-            try
-            {
-                using (StringWriter sw = new StringWriter())
-                {
-                    serializer.SetOutputWriter(sw);
-
-                    statusText.Text = "Compiling XQuery...";
-
-                    var xqueryEvaluator = xqueryCompiler.Compile(codeEditor.Text).Load();
-
-                    if ((bool)xmlInputType.IsChecked)
-                    {
-                        statusText.Text = "Parsing XML input document...";
-
-                        docBuilder.BaseUri = new Uri("urn:from-string");
-                        xqueryEvaluator.ContextItem = docBuilder.Build(new StringReader(inputEditor.Text));
-                    }
-                    else if ((bool)jsonInputType.IsChecked)
-                    {
-                        statusText.Text = "Parsing JSON input";
-
-                        xqueryEvaluator.ContextItem = ParseJson(inputEditor.Text);
-                    }
-
-                    statusText.Text = "Running XQuery...";
-
-                    xqueryEvaluator.Run(serializer);
-
-                    statusText.Text = "";
-
-                    resultEditor.Text = sw.ToString();
-                    resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
-                }
-            }
-            catch (Exception ex)
-            {
-                statusText.Text = ex.Message;
-                if (errorList.Any())
-                {
-                    statusText.Text += string.Format(": {0}: {1}:{2}", errorList.First().Message, errorList.First().LineNumber, errorList.First().ColumnNumber);
-                    resultEditor.Text = string.Join("\n", errorList.Select(error => string.Format("{0}: {1}:{2}", error.Message, error.LineNumber, error.ColumnNumber)));
-                    resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
-                }
-            }
+            runXQueryEvaluation();
         }
 
         private void xsltTransformationButton_Click(object sender, RoutedEventArgs e)
@@ -308,11 +220,11 @@ declare option output:indent ""yes"";
 
         private void LoadXQueryCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            LoadFileIntoEditor(codeEditor, "XQuery files|*.xq;*.xquery|All files|*.*");
+            baseXQueryCodeURI = LoadFileIntoEditor(codeEditor, "XQuery files|*.xq;*.xquery|All files|*.*");
         }
         private void LoadXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            LoadFileIntoEditor(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*");
+            baseXPathCodeURI = LoadFileIntoEditor(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*");
         }
         private void SaveXsltCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -488,6 +400,147 @@ declare option output:indent ""yes"";
                 typingTimer.IsEnabled = false;
                 typingTimer.Stop();
             }
+        }
+
+        private void evaluateCode_Click(object sender, RoutedEventArgs e)
+        {
+            evaluateCurrentCodeType();
+        }
+
+        private void evaluateCurrentCodeType()
+        {
+            if ((bool)codeTypeXslt.IsChecked)
+            {
+                runXsltTransformation();
+            }
+            else if ((bool)codeTypeXQuery.IsChecked)
+            {
+                runXQueryEvaluation();
+            }
+            else if ((bool)codeTypeXPath.IsChecked)
+            {
+                runXPathEvaluation();
+            }
+        }
+
+        private void runXPathEvaluation()
+        {
+            statusText.Text = "";
+            HideResultDocumentList();
+            ClearResultDocumentList();
+            resultEditor.Clear();
+
+            try
+            {
+                var xpathCode = codeEditor.Text;
+
+                var serializationParamsCode = Regex.Replace(xpathCode, @"(^\(:(?!:\))(.+?):\))?(.*)", "$2", RegexOptions.Singleline);
+
+                if (serializationParamsCode == "")
+                {
+                    serializationParamsCode = "map{}";
+                }
+
+                var serializationParams = xpathCompiler.EvaluateSingle(serializationParamsCode, null);
+
+                //serializer.SetOutputWriter(sw);
+
+                docBuilder.BaseUri = new Uri("urn:from-string");
+
+                xpathCompiler.BaseUri = new Uri(baseXPathCodeURI).AbsoluteUri;
+
+                var result = xpathCompiler.Evaluate(
+                    codeEditor.Text,
+                    (bool)xmlInputType.IsChecked ?
+                    docBuilder.Build(new StringReader(inputEditor.Text))
+                    : (bool)jsonInputType.IsChecked ?
+                    ParseJson(inputEditor.Text) : null);
+
+                //serializer.SerializeXdmValue(result);
+
+                xpathResultSerializer.SetVariable(new QName("value"), result);
+                xpathResultSerializer.SetVariable(new QName("serialization-parameters"), serializationParams);
+
+                var resultString = xpathResultSerializer.EvaluateSingle().GetStringValue();
+
+                resultEditor.Text = resultString;
+            }
+            catch (Exception ex)
+            {
+                statusText.Text = ex.Message;
+            }
+        }
+
+        private void runXQueryEvaluation()
+        {
+            statusText.Text = "";
+            ClearResultDocumentList();
+            HideResultDocumentList();
+            resultEditor.Clear();
+
+            List<XmlProcessingError> errorList = new List<XmlProcessingError>();
+            xqueryCompiler.SetErrorList(errorList);
+            xqueryCompiler.BaseUri = new Uri(baseXQueryCodeURI).AbsoluteUri;
+
+            try
+            {
+                using (StringWriter sw = new StringWriter())
+                {
+                    serializer.SetOutputWriter(sw);
+
+                    statusText.Text = "Compiling XQuery...";
+
+                    var xqueryEvaluator = xqueryCompiler.Compile(codeEditor.Text).Load();
+
+                    if ((bool)xmlInputType.IsChecked)
+                    {
+                        statusText.Text = "Parsing XML input document...";
+
+                        docBuilder.BaseUri = new Uri("urn:from-string");
+                        xqueryEvaluator.ContextItem = docBuilder.Build(new StringReader(inputEditor.Text));
+                    }
+                    else if ((bool)jsonInputType.IsChecked)
+                    {
+                        statusText.Text = "Parsing JSON input";
+
+                        xqueryEvaluator.ContextItem = ParseJson(inputEditor.Text);
+                    }
+
+                    statusText.Text = "Running XQuery...";
+
+                    xqueryEvaluator.Run(serializer);
+
+                    statusText.Text = "";
+
+                    resultEditor.Text = sw.ToString();
+                    resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
+                }
+            }
+            catch (Exception ex)
+            {
+                statusText.Text = ex.Message;
+                if (errorList.Any())
+                {
+                    statusText.Text += string.Format(": {0}: {1}:{2}", errorList.First().Message, errorList.First().LineNumber, errorList.First().ColumnNumber);
+                    resultEditor.Text = string.Join("\n", errorList.Select(error => string.Format("{0}: {1}:{2}", error.Message, error.LineNumber, error.ColumnNumber)));
+                    resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
+                }
+            }
+        }
+
+        private void codeTypeXslt_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void codeTypeXQuery_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void codeTypeXPath_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 
