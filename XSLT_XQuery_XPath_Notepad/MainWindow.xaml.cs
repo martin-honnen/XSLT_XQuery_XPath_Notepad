@@ -129,6 +129,8 @@ namespace XSLT_XQuery_XPath_Notepad
         {
             resultEditor.Text = result;
 
+            resultWebView.NavigateToString(result);
+
             resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
         }
 
@@ -512,7 +514,9 @@ declare option output:indent ""yes"";
 
                     statusText.Text = "";
 
-                    resultEditor.Text = sw.ToString();
+                    var result = sw.ToString();
+                    resultEditor.Text = result;
+                    resultWebView.NavigateToString(result);
                     resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
                 }
             }

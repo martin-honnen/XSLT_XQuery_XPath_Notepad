@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         xmlns:local="clr-namespace:XSLT_XQuery_XPath_Notepad"
         xmlns:commands="clr-namespace:XSLT_XQuery_XPath_Notepad.Commands"
         mc:Ignorable="d"
@@ -126,17 +127,30 @@
             </avalonEdit:TextEditor.ContextMenu>
         </avalonEdit:TextEditor>
         <GridSplitter Grid.Row="3" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" />
-        <DockPanel Grid.Row="4" Grid.ColumnSpan="3">
-            <StackPanel x:Name="resultPanel"  Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top">
+
+        <Grid Grid.Row="4" Grid.ColumnSpan="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="23"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel x:Name="resultPanel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
                 <Label Target="{Binding ElementName=resultDocumentList}">Result Documents</Label>
                 <ComboBox x:Name="resultDocumentList"></ComboBox>
             </StackPanel>
+
             <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-            Name="resultEditor"
-            FontFamily="Consolas"
-            SyntaxHighlighting="XML"
-            FontSize="10pt" ShowLineNumbers="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
-                    >
+        Name="resultEditor"
+                Grid.Row="1" Grid.Column="0"
+        FontFamily="Consolas"
+        SyntaxHighlighting="XML"
+        FontSize="10pt" ShowLineNumbers="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                >
                 <avalonEdit:TextEditor.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="Undo" />
@@ -148,7 +162,16 @@
                     </ContextMenu>
                 </avalonEdit:TextEditor.ContextMenu>
             </avalonEdit:TextEditor>
-        </DockPanel>
+
+            <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+
+            <wv2:WebView2 Name="resultWebView"
+                      Grid.Row="1" Grid.Column="2"
+                  Source="about:blank"/>
+        </Grid>
+        
+ 
+ 
         <StatusBar Grid.Row="5" Grid.ColumnSpan="3">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
