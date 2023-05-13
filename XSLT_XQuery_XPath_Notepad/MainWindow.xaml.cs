@@ -546,6 +546,14 @@ declare option output:indent ""yes"";
         {
 
         }
+
+        private void renderResultCbx_Checked(object sender, RoutedEventArgs e)
+        {
+            if (resultWebView != null)
+            {
+                resultWebView.Visibility = (bool)renderResultCbx.IsChecked ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
     }
 
 }

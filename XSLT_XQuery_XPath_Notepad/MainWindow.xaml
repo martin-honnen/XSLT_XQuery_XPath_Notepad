@@ -142,6 +142,7 @@
             <StackPanel x:Name="resultPanel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
                 <Label Target="{Binding ElementName=resultDocumentList}">Result Documents</Label>
                 <ComboBox x:Name="resultDocumentList"></ComboBox>
+                <CheckBox x:Name="renderResultCbx" Content="Render result?" IsChecked="True" VerticalAlignment="Center"/>
             </StackPanel>
 
             <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
@@ -151,6 +152,18 @@
         SyntaxHighlighting="XML"
         FontSize="10pt" ShowLineNumbers="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                 >
+                <avalonEdit:TextEditor.Style>
+                    <Style TargetType="avalonEdit:TextEditor">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="False">
+                                <Setter Property="Grid.ColumnSpan" Value="3"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="True">
+                                <Setter Property="Grid.ColumnSpan" Value="1"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </avalonEdit:TextEditor.Style>
                 <avalonEdit:TextEditor.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="Undo" />
@@ -163,11 +176,37 @@
                 </avalonEdit:TextEditor.ContextMenu>
             </avalonEdit:TextEditor>
 
-            <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+            <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" HorizontalAlignment="Stretch">
+                <GridSplitter.Style>
+                    <Style TargetType="GridSplitter">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GridSplitter.Style>
+            </GridSplitter>
 
-            <wv2:WebView2 Name="resultWebView"
+            <wv2:WebView2 x:Name="resultWebView"
                       Grid.Row="1" Grid.Column="2"
-                  Source="about:blank"/>
+                  Source="about:blank">
+                <wv2:WebView2.Style>
+                    <Style TargetType="wv2:WebView2">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </wv2:WebView2.Style>
+            </wv2:WebView2>
         </Grid>
         
  
