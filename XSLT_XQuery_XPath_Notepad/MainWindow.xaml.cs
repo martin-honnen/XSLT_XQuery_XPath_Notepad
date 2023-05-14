@@ -222,7 +222,7 @@ declare option output:indent ""yes"";
 
         private void LoadXQueryCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            baseXQueryCodeURI = LoadFileIntoEditor(codeEditor, "XQuery files|*.xq;*.xquery|All files|*.*");
+            baseXQueryCodeURI = LoadFileIntoEditor(codeEditor, "XQuery files|*.xq;*.xqy;*.xqu;*.xqm;*.xquery|All files|*.*");
         }
         private void LoadXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -235,7 +235,7 @@ declare option output:indent ""yes"";
 
         private void SaveXQueryCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XQuery files|*.xq;*.xquery|All files|*.*");
+            SaveEditorToFile(codeEditor, "XQuery files|*.xq;*.xqy;*.xqu;*.xqm;*.xquery|All files|*.*");
         }
         private void SaveXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
