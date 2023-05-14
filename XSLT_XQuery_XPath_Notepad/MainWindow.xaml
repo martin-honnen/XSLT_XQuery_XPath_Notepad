@@ -22,6 +22,7 @@
         <CommandBinding Command="commands:MyApplicationCommands.SaveInputDocument" Executed="SaveInputDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveResultDocument" Executed="SaveResultDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.NewPadWindow" Executed="NewPadWindow_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.AboutXsltXQueryXPathNotepad" Executed="AboutXsltXQueryXPathNotepad_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
     </Window.CommandBindings>
     <Grid x:Name="mainGrid">
         <Grid.RowDefinitions>
@@ -39,19 +40,25 @@
         </Grid.ColumnDefinitions>
         <Menu Grid.Row="0" Grid.ColumnSpan="2">
             <MenuItem Header="_File">
-                <MenuItem Header="Open _XML input" Command="commands:MyApplicationCommands.LoadXmlInput"/>
-                <MenuItem Header="Open _JSON input" Command="commands:MyApplicationCommands.LoadJsonInput"/>
-                <MenuItem Header="Open X_SLT file" Command="commands:MyApplicationCommands.LoadXsltCode"/>
-                <MenuItem Header="Open X_Query file" Command="commands:MyApplicationCommands.LoadXQueryCode"/>
-                <MenuItem Header="Open X_Path file" Command="commands:MyApplicationCommands.LoadXPathCode"/>
-                <MenuItem Header="New XSLT file" Command="commands:MyApplicationCommands.NewXsltCode"/>
-                <MenuItem Header="New XQuery file" Command="commands:MyApplicationCommands.NewXQueryCode"/>
-                <MenuItem Header="Save XSLT code" Command="commands:MyApplicationCommands.SaveXsltCode"/>
-                <MenuItem Header="Save XQuery code" Command="commands:MyApplicationCommands.SaveXQueryCode"/>
-                <MenuItem Header="Save XPath code" Command="commands:MyApplicationCommands.SaveXPathCode"/>
-                <MenuItem Header="Save input document" Command="commands:MyApplicationCommands.SaveInputDocument"/>
-                <MenuItem Header="Save result document" Command="commands:MyApplicationCommands.SaveResultDocument"/>
-                <MenuItem Header="New XSLT/XQuery/XPath notepad window" Command="commands:MyApplicationCommands.NewPadWindow"/>
+                <MenuItem Header="Open File">
+                    <MenuItem Header="Open _XML input" Command="commands:MyApplicationCommands.LoadXmlInput"/>
+                    <MenuItem Header="Open _JSON input" Command="commands:MyApplicationCommands.LoadJsonInput"/>
+                    <MenuItem Header="Open X_SLT file" Command="commands:MyApplicationCommands.LoadXsltCode"/>
+                    <MenuItem Header="Open X_Query file" Command="commands:MyApplicationCommands.LoadXQueryCode"/>
+                    <MenuItem Header="Open X_Path file" Command="commands:MyApplicationCommands.LoadXPathCode"/>
+                </MenuItem>
+                <MenuItem Header="New file/window">
+                    <MenuItem Header="New XSLT file" Command="commands:MyApplicationCommands.NewXsltCode"/>
+                    <MenuItem Header="New XQuery file" Command="commands:MyApplicationCommands.NewXQueryCode"/>
+                    <MenuItem Header="New XSLT/XQuery/XPath notepad window" Command="commands:MyApplicationCommands.NewPadWindow"/>
+                </MenuItem>
+                <MenuItem Header="Save file/code">
+                    <MenuItem Header="Save XSLT code" Command="commands:MyApplicationCommands.SaveXsltCode"/>
+                    <MenuItem Header="Save XQuery code" Command="commands:MyApplicationCommands.SaveXQueryCode"/>
+                    <MenuItem Header="Save XPath code" Command="commands:MyApplicationCommands.SaveXPathCode"/>
+                    <MenuItem Header="Save input document" Command="commands:MyApplicationCommands.SaveInputDocument"/>
+                    <MenuItem Header="Save result document" Command="commands:MyApplicationCommands.SaveResultDocument"/>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Command="Undo" />
@@ -60,6 +67,9 @@
                 <MenuItem Command="Cut" />
                 <MenuItem Command="Copy" />
                 <MenuItem Command="Paste" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="About XSLT/XQuery/XPath Notepad" Command="commands:MyApplicationCommands.AboutXsltXQueryXPathNotepad"/>
             </MenuItem>
         </Menu>
         <ToolBarTray Grid.Row="1" Grid.Column="0">

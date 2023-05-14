@@ -31,5 +31,8 @@ namespace XSLT_XQuery_XPath_Notepad.Commands
         public static RoutedUICommand SaveResultDocument = new RoutedUICommand("Save result document", "SaveResultDocument", typeof(MyApplicationCommands));
         
         public static RoutedUICommand NewPadWindow = new RoutedUICommand("New XSLT/XQuery/XPath Notepad window", "NewPadWindow", typeof(MyApplicationCommands));
+
+        public static RoutedUICommand AboutXsltXQueryXPathNotepad = new RoutedUICommand("About XSLT/XQuery/XPath Notepad", "AboutDialogue", typeof(MyApplicationCommands));
+
     }
 }

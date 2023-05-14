@@ -251,6 +251,11 @@ declare option output:indent ""yes"";
             SaveEditorToFile(inputEditor, "XML files|*.xml|JSON files|*.json|All files|*.*");
         }
 
+        private void AboutXsltXQueryXPathNotepad_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1 Notepad using Saxon " + processor.Edition + " " + processor.ProductVersion, "About XSLT 3.0/XQuery 3.1/XPath 3.1 Notepad");
+        }
+
         private string LoadFileIntoEditor(ICSharpCode.AvalonEdit.TextEditor editor, string filter)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
