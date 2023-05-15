@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("XSLT_XQuery_XPath_Notepad")]
 [assembly: AssemblyDescription(".NET WPF program to run XSLT 3.0, XQuery 3.1 and XQuery 3.1")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("HP Inc.")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("XSLT_XQuery_XPath_Notepad")]
 [assembly: AssemblyCopyright("Copyright © Martin Honnen 2023")]
 [assembly: AssemblyTrademark("")]
