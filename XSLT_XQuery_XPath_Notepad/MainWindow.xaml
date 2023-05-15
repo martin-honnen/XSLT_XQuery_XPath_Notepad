@@ -3,23 +3,28 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         xmlns:local="clr-namespace:XSLT_XQuery_XPath_Notepad"
         xmlns:commands="clr-namespace:XSLT_XQuery_XPath_Notepad.Commands"
         mc:Ignorable="d"
-        Title="XSLT 3 XPath 3.1 XQuery 3.1 Notepad" Height="800" Width="1024">
+        Title="XSLT 3.0, XQuery 3.1, XPath 3.1 Notepad" Height="800" Width="1024">
     <Window.CommandBindings>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXmlInput" Executed="LoadXmlInput_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.LoadJsonInput" Executed="LoadJsonInput_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXsltCode" Executed="LoadXsltCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXQueryCode" Executed="LoadXQueryCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXPathCode" Executed="LoadXPathCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.NewXsltCode" Executed="NewXsltCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.NewXQueryCode" Executed="NewXQueryCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveXsltCode" Executed="SaveXsltCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveXQueryCode" Executed="SaveXQueryCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveXPathCode" Executed="SaveXPathCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveInputDocument" Executed="SaveInputDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveResultDocument" Executed="SaveResultDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.NewPadWindow" Executed="NewPadWindow_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.AboutXsltXQueryXPathNotepad" Executed="AboutXsltXQueryXPathNotepad_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
     </Window.CommandBindings>
-    <Grid>
+    <Grid x:Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="25"/>
@@ -35,16 +40,25 @@
         </Grid.ColumnDefinitions>
         <Menu Grid.Row="0" Grid.ColumnSpan="2">
             <MenuItem Header="_File">
-                <MenuItem Header="Load _XML input" Command="commands:MyApplicationCommands.LoadXmlInput"/>
-                <MenuItem Header="Load _JSON input" Command="commands:MyApplicationCommands.LoadJsonInput"/>
-                <MenuItem Header="Load X_SLT file" Command="commands:MyApplicationCommands.LoadXsltCode"/>
-                <MenuItem Header="Load X_Query file" Command="commands:MyApplicationCommands.LoadXQueryCode"/>
-                <MenuItem Header="Load X_Path file" Command="commands:MyApplicationCommands.LoadXPathCode"/>
-                <MenuItem Header="Save XSLT code" Command="commands:MyApplicationCommands.SaveXsltCode"/>
-                <MenuItem Header="Save XQuery code" Command="commands:MyApplicationCommands.SaveXQueryCode"/>
-                <MenuItem Header="Save XPath code" Command="commands:MyApplicationCommands.SaveXPathCode"/>
-                <MenuItem Header="Save input document" Command="commands:MyApplicationCommands.SaveInputDocument"/>
-                <MenuItem Header="Save result document" Command="commands:MyApplicationCommands.SaveResultDocument"/>
+                <MenuItem Header="Open File">
+                    <MenuItem Header="Open _XML input" Command="commands:MyApplicationCommands.LoadXmlInput"/>
+                    <MenuItem Header="Open _JSON input" Command="commands:MyApplicationCommands.LoadJsonInput"/>
+                    <MenuItem Header="Open X_SLT file" Command="commands:MyApplicationCommands.LoadXsltCode"/>
+                    <MenuItem Header="Open X_Query file" Command="commands:MyApplicationCommands.LoadXQueryCode"/>
+                    <MenuItem Header="Open X_Path file" Command="commands:MyApplicationCommands.LoadXPathCode"/>
+                </MenuItem>
+                <MenuItem Header="New file/window">
+                    <MenuItem Header="New XSLT file" Command="commands:MyApplicationCommands.NewXsltCode"/>
+                    <MenuItem Header="New XQuery file" Command="commands:MyApplicationCommands.NewXQueryCode"/>
+                    <MenuItem Header="New XSLT/XQuery/XPath notepad window" Command="commands:MyApplicationCommands.NewPadWindow"/>
+                </MenuItem>
+                <MenuItem Header="Save file/code">
+                    <MenuItem Header="Save XSLT code" Command="commands:MyApplicationCommands.SaveXsltCode"/>
+                    <MenuItem Header="Save XQuery code" Command="commands:MyApplicationCommands.SaveXQueryCode"/>
+                    <MenuItem Header="Save XPath code" Command="commands:MyApplicationCommands.SaveXPathCode"/>
+                    <MenuItem Header="Save input document" Command="commands:MyApplicationCommands.SaveInputDocument"/>
+                    <MenuItem Header="Save result document" Command="commands:MyApplicationCommands.SaveResultDocument"/>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Command="Undo" />
@@ -53,6 +67,9 @@
                 <MenuItem Command="Cut" />
                 <MenuItem Command="Copy" />
                 <MenuItem Command="Paste" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="About XSLT/XQuery/XPath Notepad" Command="commands:MyApplicationCommands.AboutXsltXQueryXPathNotepad"/>
             </MenuItem>
         </Menu>
         <ToolBarTray Grid.Row="1" Grid.Column="0">
@@ -65,9 +82,15 @@
         </ToolBarTray>
         <ToolBarTray Grid.Row="1" Grid.Column="2">
             <ToolBar>
-                <Button x:Name="xpathEvaluationBtn" Click="xpathEvaluationBtn_Click">XPath evaluation</Button>
-                <Button x:Name="xqueryEvaluationBtn" Click="xqueryEvaluationBtn_Click">XQuery evaluation</Button>
+                <Label>Code type:</Label>
+                <RadioButton x:Name="codeTypeXslt" GroupName="codeType" Content="XSLT" IsChecked="True" Click="codeTypeXslt_Click"/>
+                <RadioButton x:Name="codeTypeXQuery" GroupName="codeType" Content="XQuery" IsChecked="False" Click="codeTypeXQuery_Click"/>
+                <RadioButton x:Name="codeTypeXPath" GroupName="codeType" Content="XPath" IsChecked="False" Click="codeTypeXPath_Click"/>
+                <Button x:Name="evaluateCode" Content="Evaluate code" Click="evaluateCode_Click"/>
+                <CheckBox x:Name="autoEvaluateCbx" Content="Automatic evaluation" IsChecked="False" Checked="autoEvaluateCbx_Checked"/>
                 <Button x:Name="xsltTransformationButton" Click="xsltTransformationButton_Click">XSLT transformation</Button>
+                <Button x:Name="xqueryEvaluationBtn" Click="xqueryEvaluationBtn_Click">XQuery evaluation</Button>
+                <Button x:Name="xpathEvaluationBtn" Click="xpathEvaluationBtn_Click">XPath evaluation</Button>
             </ToolBar>
         </ToolBarTray>
         <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
@@ -75,6 +98,7 @@
             Grid.Row="2" Grid.Column="0"
             FontFamily="Consolas"
             SyntaxHighlighting="XML"
+            TextChanged="codeEditor_TextChanged"
             FontSize="10pt" ShowLineNumbers="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AutomationProperties.HelpText="Enter XML input or JSON input here">
             <avalonEdit:TextEditor.ContextMenu>
                 <ContextMenu>
@@ -95,6 +119,7 @@
             Grid.Row="2" Grid.Column="2"
             FontFamily="Consolas"
             SyntaxHighlighting="XML"
+            TextChanged="codeEditor_TextChanged"
             FontSize="10pt" ShowLineNumbers="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AutomationProperties.HelpText="Enter XSLT or XQuery or XPath code here">
             <avalonEdit:TextEditor.ContextMenu>
                 <ContextMenu>
@@ -112,23 +137,90 @@
             </avalonEdit:TextEditor.ContextMenu>
         </avalonEdit:TextEditor>
         <GridSplitter Grid.Row="3" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" />
-        <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-            Name="resultEditor"
-            Grid.Row="4" Grid.ColumnSpan="3"
-            FontFamily="Consolas"
-            SyntaxHighlighting="XML"
-            FontSize="10pt" ShowLineNumbers="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <avalonEdit:TextEditor.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Command="Undo" />
-                    <MenuItem Command="Redo" />
-                    <Separator/>
-                    <MenuItem Command="Cut" />
-                    <MenuItem Command="Copy" />
-                    <MenuItem Command="Paste" />
-                </ContextMenu>
-            </avalonEdit:TextEditor.ContextMenu>
-        </avalonEdit:TextEditor>
+
+        <Grid Grid.Row="4" Grid.ColumnSpan="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="23"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel x:Name="resultPanel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <Label Target="{Binding ElementName=resultDocumentList}">Result Documents</Label>
+                <ComboBox x:Name="resultDocumentList"></ComboBox>
+                <CheckBox x:Name="renderResultCbx" Content="Render result?" IsChecked="True" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        Name="resultEditor"
+                Grid.Row="1" Grid.Column="0"
+        FontFamily="Consolas"
+        SyntaxHighlighting="XML"
+        FontSize="10pt" ShowLineNumbers="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                >
+                <avalonEdit:TextEditor.Style>
+                    <Style TargetType="avalonEdit:TextEditor">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="False">
+                                <Setter Property="Grid.ColumnSpan" Value="3"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="True">
+                                <Setter Property="Grid.ColumnSpan" Value="1"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </avalonEdit:TextEditor.Style>
+                <avalonEdit:TextEditor.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Undo" />
+                        <MenuItem Command="Redo" />
+                        <Separator/>
+                        <MenuItem Command="Cut" />
+                        <MenuItem Command="Copy" />
+                        <MenuItem Command="Paste" />
+                    </ContextMenu>
+                </avalonEdit:TextEditor.ContextMenu>
+            </avalonEdit:TextEditor>
+
+            <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" HorizontalAlignment="Stretch">
+                <GridSplitter.Style>
+                    <Style TargetType="GridSplitter">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GridSplitter.Style>
+            </GridSplitter>
+
+            <wv2:WebView2 x:Name="resultWebView"
+                      Grid.Row="1" Grid.Column="2"
+                  Source="about:blank">
+                <wv2:WebView2.Style>
+                    <Style TargetType="wv2:WebView2">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=renderResultCbx, Path=IsChecked}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </wv2:WebView2.Style>
+            </wv2:WebView2>
+        </Grid>
+        
+ 
+ 
         <StatusBar Grid.Row="5" Grid.ColumnSpan="3">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
