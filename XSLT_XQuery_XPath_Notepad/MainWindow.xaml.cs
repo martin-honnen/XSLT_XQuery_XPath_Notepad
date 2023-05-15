@@ -471,6 +471,7 @@ declare option output:indent ""yes"";
                 var resultString = xpathResultSerializer.EvaluateSingle().GetStringValue();
 
                 resultEditor.Text = resultString;
+                resultWebView.NavigateToString(resultString);
             }
             catch (Exception ex)
             {
