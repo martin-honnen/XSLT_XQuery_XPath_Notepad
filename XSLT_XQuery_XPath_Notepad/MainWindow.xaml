@@ -109,7 +109,7 @@
                     <MenuItem Command="Copy" />
                     <MenuItem Command="Paste" />
                     <Separator/>
-                    <MenuItem Command="commands:MyApplicationCommands.SaveInputDocument"/>
+                    <MenuItem Command="commands:MyApplicationCommands.SaveInputDocument" />
                 </ContextMenu>
             </avalonEdit:TextEditor.ContextMenu>
         </avalonEdit:TextEditor>

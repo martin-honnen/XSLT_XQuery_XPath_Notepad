@@ -36,6 +36,8 @@ namespace XSLT_XQuery_XPath_Notepad
 
         private string baseXPathCodeURI = defaultBaseInputURI;
 
+        private string baseInputCodeURI = defaultBaseInputURI;
+
         private static Processor processor = new Processor();
 
         private XPathCompiler xpathCompiler;
@@ -207,12 +209,12 @@ declare option output:indent ""yes"";
         }
         private void LoadXmlInput_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            LoadFileIntoEditor(inputEditor, "XML files|*.xml|XHTML files|*.xhtml|All files|*.*");
+            baseInputCodeURI = LoadFileIntoEditor(inputEditor, "XML files|*.xml|XHTML files|*.xhtml|All files|*.*");
         }
 
         private void LoadJsonInput_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            LoadFileIntoEditor(inputEditor, "JSON files|*.json|All files|*.*");
+            baseInputCodeURI = LoadFileIntoEditor(inputEditor, "JSON files|*.json|All files|*.*");
         }
 
         private void LoadXsltCode_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -340,7 +342,7 @@ declare option output:indent ""yes"";
                 {
                     statusText.Text = "Parsing XML input document...";
 
-                    docBuilder.BaseUri = new Uri("urn:from-string");
+                    docBuilder.BaseUri = new Uri(baseInputCodeURI);
                     inputItem = docBuilder.Build(new StringReader(inputEditor.Text));
                 }
                 else if ((bool)jsonInputType.IsChecked)
@@ -452,7 +454,7 @@ declare option output:indent ""yes"";
 
                 //serializer.SetOutputWriter(sw);
 
-                docBuilder.BaseUri = new Uri("urn:from-string");
+                docBuilder.BaseUri = new Uri(baseInputCodeURI);
 
                 xpathCompiler.BaseUri = new Uri(baseXPathCodeURI).AbsoluteUri;
 
@@ -504,7 +506,7 @@ declare option output:indent ""yes"";
                     {
                         statusText.Text = "Parsing XML input document...";
 
-                        docBuilder.BaseUri = new Uri("urn:from-string");
+                        docBuilder.BaseUri = new Uri(baseInputCodeURI);
                         xqueryEvaluator.ContextItem = docBuilder.Build(new StringReader(inputEditor.Text));
                     }
                     else if ((bool)jsonInputType.IsChecked)
