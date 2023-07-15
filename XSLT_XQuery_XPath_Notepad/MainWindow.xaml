@@ -6,6 +6,7 @@
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         xmlns:local="clr-namespace:XSLT_XQuery_XPath_Notepad"
         xmlns:commands="clr-namespace:XSLT_XQuery_XPath_Notepad.Commands"
+        xmlns:fa="http://schemas.fontawesome.com/icons/svg/properties"
         mc:Ignorable="d"
         Title="XSLT 3.0, XQuery 3.1, XPath 3.1 Notepad" Height="800" Width="1024">
     <Window.CommandBindings>
@@ -86,7 +87,13 @@
                 <RadioButton x:Name="codeTypeXslt" GroupName="codeType" Content="XSLT" IsChecked="True" Click="codeTypeXslt_Click"/>
                 <RadioButton x:Name="codeTypeXQuery" GroupName="codeType" Content="XQuery" IsChecked="False" Click="codeTypeXQuery_Click"/>
                 <RadioButton x:Name="codeTypeXPath" GroupName="codeType" Content="XPath" IsChecked="False" Click="codeTypeXPath_Click"/>
-                <Button x:Name="evaluateCode" Content="Evaluate code" Click="evaluateCode_Click"/>
+                <Button x:Name="evaluateCode" Click="evaluateCode_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image fa:FontAwesome.Icon="Solid_Play" fa:FontAwesome.PrimaryColor="Green" Width="14" Height="14"/>
+                        <TextBlock>Evaluate code</TextBlock>
+                    </StackPanel>
+                </Button>
+                <!--<Button x:Name="evaluateCode" Click="evaluateCode_Click" fa:FontAwesome.Icon="Solid_Play"/>-->
                 <CheckBox x:Name="autoEvaluateCbx" Content="Automatic evaluation" IsChecked="False" Checked="autoEvaluateCbx_Checked"/>
                 <Button x:Name="xsltTransformationButton" Click="xsltTransformationButton_Click">XSLT transformation</Button>
                 <Button x:Name="xqueryEvaluationBtn" Click="xqueryEvaluationBtn_Click">XQuery evaluation</Button>
